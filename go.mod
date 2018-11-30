@@ -17,7 +17,7 @@ require (
 	github.com/koron/iferr v0.0.0-20180615142939-bb332a3b1d91 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/mdempsky/gocode v0.0.0-20181127203757-525aa8bb282c // indirect
-	github.com/nicholasjackson/periph-gpio-simulator v0.1.0
+	github.com/nicholasjackson/periph-gpio-simulator v0.4.0
 	github.com/nicksnyder/go-i18n v1.10.0 // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
 	github.com/peterh/liner v1.1.0 // indirect

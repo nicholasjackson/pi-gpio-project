@@ -2,8 +2,9 @@ package main
 
 import (
 	"log"
+	"math/rand"
+	"net/http"
 	"os"
-	"os/signal"
 	"time"
 
 	"github.com/nicholasjackson/periph-gpio-simulator/host/rpi"
@@ -20,28 +21,86 @@ func main() {
 		log.Fatal(err)
 	}
 
-	go flipPinState(rpi.P1_15)
+	p14 := PinCycle{
+		Pin:     rpi.SO_51,
+		Running: false,
+	}
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c)
+	p15 := PinCycle{
+		Pin:     rpi.SO_53,
+		Running: false,
+	}
 
-	// Block until a signal is received.
-	<-c
-}
+	p18 := PinCycle{
+		Pin:     rpi.SO_63,
+		Running: false,
+	}
 
-func flipPinState(pin gpio.PinIO) {
-	state := gpio.High
+	p23 := PinCycle{
+		Pin:     rpi.SO_77,
+		Running: false,
+	}
+
+	p24 := PinCycle{
+		Pin:     rpi.SO_81,
+		Running: false,
+	}
+
+	p25 := PinCycle{
+		Pin:     rpi.SO_83,
+		Running: false,
+	}
+
+	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		if r.URL.Query().Get("mode") == "on" {
+			p14.Cycle()
+			p15.Cycle()
+			p18.Cycle()
+			p23.Cycle()
+			p24.Cycle()
+			p25.Cycle()
+		} else {
+			p14.Stop()
+			p15.Stop()
+			p18.Stop()
+			p23.Stop()
+			p24.Stop()
+			p25.Stop()
+		}
+	})
+
+	http.ListenAndServe(":9000", nil)
 
 	for {
-		pin.Out(state)
-
-		time.Sleep(500 * time.Millisecond)
-
-		// flip the state
-		if state == gpio.High {
-			state = gpio.Low
-		} else {
-			state = gpio.High
-		}
 	}
+}
+
+type PinCycle struct {
+	Pin     gpio.PinIO
+	Running bool
+}
+
+func (f *PinCycle) Cycle() {
+	go func() {
+		f.Running = true
+		state := gpio.High
+
+		for f.Running {
+			f.Pin.Out(state)
+
+			sleepDuration := rand.Intn(1000-300) + 300
+			time.Sleep(time.Duration(sleepDuration) * time.Millisecond)
+
+			// flip the state
+			if state == gpio.High {
+				state = gpio.Low
+			} else {
+				state = gpio.High
+			}
+		}
+	}()
+}
+
+func (f *PinCycle) Stop() {
+	f.Running = false
 }

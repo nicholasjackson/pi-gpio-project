@@ -1,4 +1,5 @@
-# Building a GPIO based Raspberry Pi project
+# Building a GPIO based Raspberry Pi project controllable from Google Assistant
+In this project we are going to build a small project for the Raspberry Pi which allows us to control some LEDs using Google Assistant, the 
 
 Go allows you to compile an application for multiple languages from a single source.  For the first part of this tutorial we will be working in a Linux environment. The first step is to create the `main.go` application entry point, let's create that file in the current folder.
 
@@ -208,17 +209,16 @@ Since we do are not coding onto a Raspberry Pi at the moment we can use a simula
 Add the following code to your example:
 
 ```go
-	rpi.P1_15.Out(gpio.High)
+	rpi.SO_51.Out(gpio.High)
 
-  // register for key presses
-	c := make(chan os.Signal, 1)
-	signal.Notify(c)
 
-	// Block until a signal is received.
-	<-c
+	// Continuous loop blocking exit
+  for {
+
+  }
 ```
 
-The line `rpi.P1_15.Out(gpio.High)` will set `Pin 15` on the Pi to High, the following lines ensure that our application will not exit until a key press is detected.  We also need to add two more package imports to our code:
+The line `rpi.SO_51.Out(gpio.High)` will set `Pin 15` on the Pi to High, the following lines ensure that our application will not exit until a key press is detected.  We also need to add two more package imports to our code:
 
 ```go
   // GPIO simulator for the Raspberry Pi, compatible with periph.io rpi package
@@ -244,34 +244,208 @@ Log (log is also written to ./out.log:
 
 The Pin 15 should be highlighted in Red showing it's High state, all the other pins will be white.  Let's modify things a little further to cycle this pin on and off.
 
-To cycle the pin high and low we are going to create an endless loop which continuousuly flips the state and then waits for a set interval.  First let's create a new function which has the following signature and add it to the bottom of our file.
+To cycle the pin high and low we are going to create an endless loop which continuously flips the state and then waits for a set interval.  First let's create a new `struct` which will encapsulate this behavior.  We are going to add this after our `func main`.
+
+The first thing we need to do is to define a new struct with the following fields:
 
 ```go
-func flipPinState(pin gpio.PinIO) {
-  // set the initial pin state to high
-	state := gpio.High
+type PinCycle struct {
+	Pin     gpio.PinIO
+	Running bool
+}
+```
 
-	for {
-    // set the pin state
-		pin.Out(state)
+The struct has two fields `Pin` which is of type `gpio.PinIO` and `Running` of type `bool`, the `Pin` field will hold a reference to our Raspberry Pi pin and `Running` will hold the state if the pin is cycling between the high and low state.
 
-    // sleep for 0.5 seconds
-		time.Sleep(500 * time.Millisecond)
+We can then add a method to this struct which will allow us to flip the pin state:
 
-		// flip the state
-		if state == gpio.High {
-			state = gpio.Low
-		} else {
-			state = gpio.High
+```go
+func (f *PinCycle) Cycle() {
+	go func() {
+		f.Running = true
+		state := gpio.High
+
+		for f.Running {
+			f.Pin.Out(state)
+
+			time.Sleep(500 * time.Millisecond)
+
+			// flip the state
+			if state == gpio.High {
+				state = gpio.Low
+			} else {
+				state = gpio.High
+			}
 		}
-	}
+	}()
 }
 ```
 
 Let's examine what is going on in this block.
 
-First let's examine our signature `flipPinState(pin gpio.PinIO)`, we are creating a function which the name `flipPinState` and this accepts a single parameter `pin` which is of type `interface` `gpio.Pin`.  If you remember back from when we discussed interfaces as a definition of behaviour for an object and how they are a method for loose coupling in an application. 
+First is that we are using a new keyword `go`, the `go` keyword will execute a statement and will not wait for it to return, since we are using a continuous loop inside of our method if we did not use the `go` keyword then the `Cycle` method would block forever and nothing beneath it in our program would execute.  When using the `go` keyword we could execute a single statement, for example `go logger.Println("Hello World")`, however when we need to execute multiple statement we can wrap these into an inline function with `go func() {//...}()`.
 
-First the line `state := gpio.High` we are creating a local variable `state` and setting the initial value to be that of `gpio.High` or the `on` state for the pin.
+In the next line we are setting the running state to true with the line `f.Running = true`, `Running` is a field on our `PinCycle` struct, we use the `f.` accessor as this is what we defined in the method signature as a variable to attach the method to the struct, `func(f *PinCycle) Cycle()`.
 
-If you run your app gain `go run main.go` you should now see the 
+We are then setting the initial pin state to `gpio.High`, we will use this variable to cycle the pin between high and low states and this will cause our LED to flash.
+
+Next we start a loop `for f.Running { // ...}`, this loop will run as long as the value of `f.Running` is set to `true`, this is also the code which would block our program from executing future statements had we not wrapped it into a `go func() {}()` block.
+
+We then set our pins output state to our current state, for the first iteration of the loop this will be `gpio.High`, before we change the state again we are going to `Sleep` for half a second.  To sleep we are going to use the `Sleep(time.Duration)` function from the `time` Go standard package.  This function has a single parameter which is a duration, we can create a duration simply by multiplying an integer by a time.Duration type, `500 *time.Millisecond)`.
+
+After we have slept we need to cycle the pin state before repeating our loop, to do this we are using an `if` statement, an `if` statement allows us to do one thing if the condition in the statement is true and something else when it is false.
+
+```go
+if state == gpio.High {
+	state = gpio.Low
+} else {
+	state = gpio.High
+}
+```
+
+We are checking if the state is currently `gpio.High` and if so we set it to `gpio.Low`, if it is `gpio.Low` we then set things to `gpio.High`.
+
+When we call the `Cycle()` method on our `PinCycle` struct the pin state will change every half a second and when there is a LED attached to the pin this will cause it to flash.
+
+Since we are now using the `time` package add this to your list of imported packages at the top of your file.  We can then delete the line `rpi.P1_15.Out(gpio.High)` create an instance of our `PinCycle` struct and call the `Cycle` method.
+
+```go
+	p15 := PinCycle{
+		Pin:     rpi.SO_51,// GPIO 15
+		Running: false,
+	}
+	p15.Cycle()
+```
+
+When we are creating our `PinCycle` object we are passing it a reference to the Pin we would like to cycle and also setting the initial state for `Running` to be `false`.
+
+Before we continue, let's also add a `Stop` method, we will need this later:
+
+```go
+func (f *PinCycle) Stop() {
+	f.Running = false
+}
+```
+
+All we are doing here is setting the internal Field to false, this will make the loop in the `Cycle` method exit.
+
+If you run your app gain `go run main.go` you should now see pin 15 flashing every 0.5 seconds. 
+
+```bash
+######### Raspbery Pi Model Zero GPIO simulator ###########
+
+ +| +| -|14|15|18| -|23|24| -|25|08|07|01| -|12| -|16|20|21
+         ## ## ##    ## ##    ## ## ## ##    ##    ## ##
+   ## ## ##    ##    ##    ## ## ##    ## ## ## ## ## ##
+ +|02|03|04| -|17|27|22| +|10|09|11| -|00|05|06|13|19|16| -
+
+
+Log (log is also written to ./out.log:
+10:38:30.910722 Hello World
+```
+
+Lets add some more pins to our application, we are going to use pins `14`,`15`,`18`,`23`, `24`, and `25`, which correspond to `SO_51`, `SO_53`, `SO_64`, `SO_77`, `SO_81`, `SO_83`.  Define the new `PinCycle` structs and call the `Cycle` method for your new pins.
+
+You should have defined something like the following in your code:
+
+```go
+	p14 := PinCycle{
+		Pin:     rpi.SO_51,
+		Running: false,
+	}
+
+	p15 := PinCycle{
+		Pin:     rpi.SO_53,
+		Running: false,
+	}
+
+	p18 := PinCycle{
+		Pin:     rpi.SO_63,
+		Running: false,
+	}
+
+	p23 := PinCycle{
+		Pin:     rpi.SO_77,
+		Running: false,
+	}
+
+	p24 := PinCycle{
+		Pin:     rpi.SO_81,
+		Running: false,
+	}
+
+	p25 := PinCycle{
+		Pin:     rpi.SO_83,
+		Running: false,
+	}
+
+	p14.Cycle()
+	p15.Cycle()
+	p18.Cycle()
+	p23.Cycle()
+	p24.Cycle()
+  p25.Cycle()
+  ```
+
+  When you now run `go run main.go` you should see 6 of the pins flashing.
+
+  This is somewhat boring though, what would be nice is if they flashed at different rates, lets make a little change to our code to change the flash duration.
+
+  We are going to use the random standard package `rand` to create a random duration between 300 milliseconds and 1000 milliseconds, to do this we use the function `rand.Intn(max int)` which returns a random number up to the specified maximum.  To get a number in a range we generate a number which is our max with the minimum subtracted then add the minimum.
+
+  Remember to add the package `rand` to your imports.
+
+  Change the line in your `Cycle` method, `time.Sleep(500 * time.Millisecond)` and replace it with the following two lines.
+
+  ```go
+sleepDuration := rand.Intn(1000-300) + 300
+time.Sleep(time.Duration(sleepDuration) * time.Millisecond)
+```
+
+Now when run `go run main.go` you should see 6 of the pins flashing at different rates.
+
+Ok we are nearly there, there is one last step before we can control our application with Google Assistant, rather than just start the application with `go run` we need to be able to start and stop it based on a HTTP request.  To do this we are going to implement a simple HTTP server.  The Go standard library again has fantastic capability for this using the `http` package, we can register routes such as "/" which will trigger a function and it only requires a single command to start the server.
+
+First we need to map a route which will trigger a function, to do this we use the function `http.HandleFunc(path string, handler func(http.ResponseWriter, *http.Request))`.
+
+This function has two parameters the first is the path which will trigger the function provided in the second parameter.  To determine if  the LEDs are to be switched on or off, we are going to read a query string variable.  Add the following code block which will replace your code where you have `p14.Cycle()`, etc.
+
+```go
+	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		if r.URL.Query().Get("mode") == "on" {
+			p14.Cycle()
+			p15.Cycle()
+			p18.Cycle()
+			p23.Cycle()
+			p24.Cycle()
+			p25.Cycle()
+		} else {
+			p14.Stop()
+			p15.Stop()
+			p18.Stop()
+			p23.Stop()
+			p24.Stop()
+			p25.Stop()
+		}
+	})
+```
+
+If the webserver is called with the query string `?mode=on` then we will active the LEDs if it is called with `?mode=off` then we deactivate them.
+
+All we need to do now is to start the server with the function `http.HttpListenAndServe(":9000",nil)`, this will start a webserver which is accessible on port `9000`.  Add the following line to your `func main` just before the `for` statement.
+
+```go
+	http.ListenAndServe(":9000", nil)
+```
+
+We can now test our application start the application using `go run main.go` and then in another terminal window make a call to the webserver using curl.
+
+```go
+# Start LEDs cycling
+curl "http://localhost:9000/?mode=on"
+
+# Stop LEDs cycling
+curl "http://localhost:9000/?mode=off"
+```
+
+That is all we need to do, our application is almost complete, in the next steps we will hook things up to the Google Assistant.

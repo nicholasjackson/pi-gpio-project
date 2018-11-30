@@ -45,6 +45,10 @@ github.com/mdempsky/gocode v0.0.0-20181127203757-525aa8bb282c h1:saoWWUaidAuBfvW
 github.com/mdempsky/gocode v0.0.0-20181127203757-525aa8bb282c/go.mod h1:hltEC42XzfMNgg0S1v6JTywwra2Mu6F6cLR03debVQ8=
 github.com/nicholasjackson/periph-gpio-simulator v0.1.0 h1:wo861xTgFOir5fdHr/aV9SVYYs/HYdXBICuOyb4GIaw=
 github.com/nicholasjackson/periph-gpio-simulator v0.1.0/go.mod h1:MAWHmaJRNTe6Xv15grDnhaH+dCR+9yxgqc/kGqP7NjU=
+github.com/nicholasjackson/periph-gpio-simulator v0.2.0 h1:++5dlRFVDlOOjxEIYWx0UXbw1HRVvLirQKxJVSpU8Ns=
+github.com/nicholasjackson/periph-gpio-simulator v0.2.0/go.mod h1:MAWHmaJRNTe6Xv15grDnhaH+dCR+9yxgqc/kGqP7NjU=
+github.com/nicholasjackson/periph-gpio-simulator v0.4.0 h1:4bLW4JPaBaTnPtw4Q4Ype6HhiR1efgWgKC4OvUH0pAY=
+github.com/nicholasjackson/periph-gpio-simulator v0.4.0/go.mod h1:MAWHmaJRNTe6Xv15grDnhaH+dCR+9yxgqc/kGqP7NjU=
 github.com/nicksnyder/go-i18n v1.10.0 h1:5AzlPKvXBH4qBzmZ09Ua9Gipyruv6uApMcrNZdo96+Q=
 github.com/nicksnyder/go-i18n v1.10.0/go.mod h1:HrK7VCrbOvQoUAQ7Vpy7i87N7JZZZ7R2xBGjv0j365Q=
 github.com/nsf/termbox-go v0.0.0-20181027232701-60ab7e3d12ed h1:bAVGG6B+R5qpSylrrA+BAMrzYkdAoiTaKPVxRB+4cyM=
