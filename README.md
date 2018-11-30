@@ -244,3 +244,34 @@ Log (log is also written to ./out.log:
 
 The Pin 15 should be highlighted in Red showing it's High state, all the other pins will be white.  Let's modify things a little further to cycle this pin on and off.
 
+To cycle the pin high and low we are going to create an endless loop which continuousuly flips the state and then waits for a set interval.  First let's create a new function which has the following signature and add it to the bottom of our file.
+
+```go
+func flipPinState(pin gpio.PinIO) {
+  // set the initial pin state to high
+	state := gpio.High
+
+	for {
+    // set the pin state
+		pin.Out(state)
+
+    // sleep for 0.5 seconds
+		time.Sleep(500 * time.Millisecond)
+
+		// flip the state
+		if state == gpio.High {
+			state = gpio.Low
+		} else {
+			state = gpio.High
+		}
+	}
+}
+```
+
+Let's examine what is going on in this block.
+
+First let's examine our signature `flipPinState(pin gpio.PinIO)`, we are creating a function which the name `flipPinState` and this accepts a single parameter `pin` which is of type `interface` `gpio.Pin`.  If you remember back from when we discussed interfaces as a definition of behaviour for an object and how they are a method for loose coupling in an application. 
+
+First the line `state := gpio.High` we are creating a local variable `state` and setting the initial value to be that of `gpio.High` or the `on` state for the pin.
+
+If you run your app gain `go run main.go` you should now see the 
