@@ -1,0 +1,24 @@
+#!/bin/bash
+# check
+
+echo "Checking the solution of the challenge"
+
+grep -Fq "type PinCycle struct" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you added the struct definition 'type PinCycle struct' to your main.go file"
+fi
+
+grep -Fq "func (f *PinCycle) Cycle() {" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you added the Cycle method 'func (f *PinCycle) Cycle()' to your main.go file"
+fi
+
+grep -Fq "func (f *PinCycle) Stop()" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you have added the Stop method 'func (f *PinCycle) Stop()' to your main.go file"
+fi
+
+grep -Fq "p15 := PinCycle" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you replaced the line 'rpi.SO_51.Out(gpio.High)', with the new definition"
+fi

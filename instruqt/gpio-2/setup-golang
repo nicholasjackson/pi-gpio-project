@@ -1,0 +1,24 @@
+rm -f /go/src/github.com/instruqt/pi-project/main.go
+
+tee /go/src/github.com/instruqt/pi-project/main.go > /dev/null <<"EOF"
+package main
+
+import (
+	"log"
+	"os"
+
+	"periph.io/x/periph/host"
+
+)
+
+func main() {
+	logger := log.New(os.Stdout, "", log.Lmicroseconds)
+	logger.Println("Hello World")
+
+	// Load all drivers:
+	if _, err := host.Init(); err != nil {
+		log.Fatal(err)
+	
+  }
+}
+EOF

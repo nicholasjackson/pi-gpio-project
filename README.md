@@ -1,7 +1,16 @@
 # Building a GPIO based Raspberry Pi project controllable from Google Assistant
-In this project we are going to build a small project for the Raspberry Pi which allows us to control some LEDs using Google Assistant, the 
+In this project we are going to build a small project for the Raspberry Pi using the Go programming language, we are then going to connect this to Google Assistant so that the LEDs can be activated from a simple voice command.
 
-Go allows you to compile an application for multiple languages from a single source.  For the first part of this tutorial we will be working in a Linux environment. The first step is to create the `main.go` application entry point, let's create that file in the current folder.
+This tutorial can be run on any platform, Windows, Linux, MacOS, and the first part takes you through how to set this all up using a simulator for the Raspberry Pi which will run in any environment.  We will learn how to create the application code, how to expose the application to the internet using Ngrok, and how we can use IFTTT to glue all of this together.
+
+In the final part of the tutorial we will put everything together, and see how you we run the application onto a real Raspberry Pi and how to wire up some LEDs to the GPIO port on the Pi. So warm up your soldering iron.
+
+## Go Basics - Part 1
+One of the benefits of Go is that it allows you to compile an application for multiple languages from a single source, this makes development really easy as you can easily build an application on MacOs which will run on a Raspberry Pi.  For the first part of this tutorial we will be working in a Linux environment, but we will see later how we can cross compile our application and run it on real hardware.
+
+The first step is to create the `main.go` application entry point, let's create that file in the current folder.
+
+Open your file and add the following contents to it:
 
 ```go
 package main
@@ -11,7 +20,9 @@ func main() {
 }
 ```
 
-Once we have that file we can run it using the command `go run main.go`, run that now in your terminal.
+The first line in our code is the `package` declaration, an executable Go application always needs a `main` package. The package name is always the first line in the file and normally corresponds to the folder name.  In Go you can break up your application into packages by creating `.go` files inside of folders.  In this demo we are going to concentrate on a single `main.go` file however we will be using external packages.
+
+Once we have that file we can run it using the command `go run main.go`, run this now in your terminal.
 
 ```bash
 $ go run main.go
@@ -19,7 +30,7 @@ $ go run main.go
 
 When you run `go run main.go` the Go run time will compile a temporary version of your application and then execute it, we will not see any output from this run as the `main` func has no content.
 
-An executable Go application always needs a `main` package, the package name is always the first line in the file and normally corresponds to the folder name.  In Go you can break up your application into packages by creating `.go` files inside of folders.
+## Go Basics - Part 2
 
 Let's add some content to our `func main`, we are going to add a logger which will log output to the command line, to do this we will use the `log` package which is part of Go's standard library.  Add the following lines to your `main.go`.
 
@@ -171,7 +182,12 @@ $ go run main.go
 
 This time we should see the message "Hello World", with the basics out of the way lets start writing our go programme for our Raspberry Pi.
 
-To interact with the `GPIO` interface on the Pi we are going to use the `gpio` package from `perif.io`, [https://periph.io/](https://periph.io/). `perif.io` provides low level capabilities to interact with a number of different devices including the Raspberry Pi.  The first thing we need to do is to initialize `perif.io` we do this with the following code.
+
+## GPIO - Part 1
+
+To interact with the `GPIO` interface on the Pi we are going to use the `gpio` package from `perif.io`, [https://periph.io/](https://periph.io/). `perif.io` provides low level capabilities to interact with a number of different devices including the Raspberry Pi.  
+
+The first thing we need to do is to initialize `perif.io` we do this with the following code.
 
 ```go
 	// Load all drivers:
@@ -204,7 +220,9 @@ func main() {
 }
 ```
 
-Since we do are not coding onto a Raspberry Pi at the moment we can use a simulator which is a direct replacement for the Pi but will show us graphically the output of the pins.  Let's add some code to set one of the pins to `High` this would send voltage to the pin and if a LED was attached then the LED would illuminate.
+## GPIO - Part 2
+
+Since we are not currently coding onto a Raspberry Pi, we can use a simulator which is a direct replacement for the Pi but will show us graphically the output of the pins.  Let's add some code to set one of the pins to `High` this would send voltage to the pin and if a LED was attached then the LED would illuminate.
 
 Add the following code to your example:
 
@@ -213,9 +231,7 @@ Add the following code to your example:
 
 
 	// Continuous loop blocking exit
-  for {
-
-  }
+  select {}
 ```
 
 The line `rpi.SO_51.Out(gpio.High)` will set `Pin 15` on the Pi to High, the following lines ensure that our application will not exit until a key press is detected.  We also need to add two more package imports to our code:
@@ -227,7 +243,7 @@ The line `rpi.SO_51.Out(gpio.High)` will set `Pin 15` on the Pi to High, the fol
 	"periph.io/x/periph/conn/gpio"
 ```
 
-When you run your application again you should now see the following output:
+When you now run your application again you should now see the following output:
 
 ```bash
 ######### Raspbery Pi Model Zero GPIO simulator ###########
@@ -242,11 +258,14 @@ Log (log is also written to ./out.log:
 17:05:52.682209 Hello World                                      
 ```
 
-The Pin 15 should be highlighted in Red showing it's High state, all the other pins will be white.  Let's modify things a little further to cycle this pin on and off.
+The Pin 15 should be highlighted in Red showing it's High state, all the other pins will be white.  
 
-To cycle the pin high and low we are going to create an endless loop which continuously flips the state and then waits for a set interval.  First let's create a new `struct` which will encapsulate this behavior.  We are going to add this after our `func main`.
+## GPIO - Part 3
+Let's modify things a little further to cycle this pin on and off.
 
-The first thing we need to do is to define a new struct with the following fields:
+To cycle the pin high and low we are going to create an endless loop which continuously flips the state and then waits for a set interval.  First let's create a new `struct` which will encapsulate this behavior.
+
+The first thing we need to do is to define a new struct with the following fields after your main function.
 
 ```go
 type PinCycle struct {
@@ -344,6 +363,8 @@ Log (log is also written to ./out.log:
 10:38:30.910722 Hello World
 ```
 
+## GPIO - Part 4
+
 Lets add some more pins to our application, we are going to use pins `14`,`15`,`18`,`23`, `24`, and `25`, which correspond to `SO_51`, `SO_53`, `SO_64`, `SO_77`, `SO_81`, `SO_83`.  Define the new `PinCycle` structs and call the `Cycle` method for your new pins.
 
 You should have defined something like the following in your code:
@@ -389,6 +410,8 @@ You should have defined something like the following in your code:
 
   When you now run `go run main.go` you should see 6 of the pins flashing.
 
+  ## GPIO - Part 5
+
   This is somewhat boring though, what would be nice is if they flashed at different rates, lets make a little change to our code to change the flash duration.
 
   We are going to use the random standard package `rand` to create a random duration between 300 milliseconds and 1000 milliseconds, to do this we use the function `rand.Intn(max int)` which returns a random number up to the specified maximum.  To get a number in a range we generate a number which is our max with the minimum subtracted then add the minimum.
@@ -404,11 +427,15 @@ time.Sleep(time.Duration(sleepDuration) * time.Millisecond)
 
 Now when run `go run main.go` you should see 6 of the pins flashing at different rates.
 
+## HTTP - Part 1
+
 Ok we are nearly there, there is one last step before we can control our application with Google Assistant, rather than just start the application with `go run` we need to be able to start and stop it based on a HTTP request.  To do this we are going to implement a simple HTTP server.  The Go standard library again has fantastic capability for this using the `http` package, we can register routes such as "/" which will trigger a function and it only requires a single command to start the server.
 
 First we need to map a route which will trigger a function, to do this we use the function `http.HandleFunc(path string, handler func(http.ResponseWriter, *http.Request))`.
 
-This function has two parameters the first is the path which will trigger the function provided in the second parameter.  To determine if  the LEDs are to be switched on or off, we are going to read a query string variable.  Add the following code block which will replace your code where you have `p14.Cycle()`, etc.
+This function has two parameters the first is the path which will trigger the function provided in the second parameter.  
+
+To determine if  the LEDs are to be switched on or off, we are going to read a query string variable.  Add the following code block which will replace your code where you have `p14.Cycle()`, etc.
 
 ```go
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
@@ -431,6 +458,8 @@ This function has two parameters the first is the path which will trigger the fu
 ```
 
 If the webserver is called with the query string `?mode=on` then we will active the LEDs if it is called with `?mode=off` then we deactivate them.
+
+## HTTP - Part 2
 
 All we need to do now is to start the server with the function `http.HttpListenAndServe(":9000",nil)`, this will start a webserver which is accessible on port `9000`.  Add the following line to your `func main` just before the `for` statement.
 

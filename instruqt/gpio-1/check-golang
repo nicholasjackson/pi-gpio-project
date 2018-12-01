@@ -1,0 +1,14 @@
+#!/bin/bash
+# check
+
+echo "Checking the solution of the challenge"
+
+grep -Fq "if _, err := host.Init(); err != nil" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you have added the code to initialize perif.io to your main.go"
+fi
+
+grep -Fq "periph.io/x/periph/host" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you have added the import for periph.io to your main.go"
+fi

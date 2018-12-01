@@ -1,0 +1,7 @@
+cp /setup/.vimrc /root
+echo "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin:/go/bin" >> /root/.bashrc
+
+mkdir -p /go/src/github.com/instruqt/pi-project
+set-workdir /go/src/github.com/instruqt/pi-project
+
+touch /go/src/github.com/instruqt/pi-project/main.go

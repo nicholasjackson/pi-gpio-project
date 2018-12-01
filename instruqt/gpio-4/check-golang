@@ -1,0 +1,64 @@
+#!/bin/bash
+# check
+
+echo "Checking the solution of the challenge"
+
+grep -Fq "p14 := PinCycle{" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you added the 'PinCycle' for pin 14"
+fi
+
+grep -Fq "p14.Cycle()" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you call the 'Cycle' for pin 14"
+fi
+
+grep -Fq "p15 := PinCycle{" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you added the 'PinCycle' for pin 15"
+fi
+
+grep -Fq "p15.Cycle()" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure call the 'Cycle' for pin 15"
+fi
+
+grep -Fq "p18 := PinCycle{" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you added the 'PinCycle' for pin 18"
+fi
+
+grep -Fq "p18.Cycle()" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure call the 'Cycle' for pin 18"
+fi
+
+grep -Fq "p23 := PinCycle{" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you added the 'PinCycle' for pin 23"
+fi
+
+grep -Fq "p23.Cycle()" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure call the 'Cycle' for pin 23"
+fi
+
+grep -Fq "p24 := PinCycle{" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you added the 'PinCycle' for pin 24"
+fi
+
+grep -Fq "p24.Cycle()" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure call the 'Cycle' for pin 24"
+fi
+
+grep -Fq "p25 := PinCycle{" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you added the 'PinCycle' for pin 25"
+fi
+
+grep -Fq "p25.Cycle()" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure call the 'Cycle' for pin 25"
+fi

@@ -1,0 +1,24 @@
+#!/bin/bash
+# check
+
+echo "Checking the solution of the challenge"
+
+grep -Fq "logger := log.New" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you added the line 'logger := log.New(os.Stdout, "", log.Lmicroseconds)' to your main.go file"
+fi
+
+grep -Fq "logger.Println" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you added the line 'logger.Println("Hello World")' to your main.go file"
+fi
+
+grep -Fq "\"os\"" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you have added your import statements"
+fi
+
+grep -Fq "\"log\"" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you have added your import statements"
+fi

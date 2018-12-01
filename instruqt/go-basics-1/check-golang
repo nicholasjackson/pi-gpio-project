@@ -1,0 +1,14 @@
+#!/bin/bash
+# check
+
+echo "Checking the solution of the challenge"
+
+grep -Fq "package main" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure 'package main' is in the first line of your main.go file"
+fi
+
+grep -Fq "func main()" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you have defined your 'func main()' in your main.go file"
+fi

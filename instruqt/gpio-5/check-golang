@@ -1,0 +1,14 @@
+#!/bin/bash
+# check
+
+echo "Checking the solution of the challenge"
+
+grep -Fq "sleepDuration := rand.Intn(1000-300) + 300" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you are calculating a random sleepDuration in your main.go file"
+fi
+
+grep -Fq "time.Sleep(time.Duration(sleepDuration) * time.Millisecond)" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you changed your 'time.Sleep' statement in your main.go file"
+fi
