@@ -73,7 +73,7 @@ func main() {
   })
 
   // Block application exit
-  select{}
+  http.ListenAndServe(":9000", nil)
 }
 
 type PinCycle struct {
@@ -88,7 +88,8 @@ func (f *PinCycle) Cycle() {
 
     for f.Running {
       f.Pin.Out(state)
-      time.Sleep(500 * time.Millisecond)
+      sleepDuration := rand.Intn(1000-300) + 300
+      time.Sleep(time.Duration(sleepDuration) * time.Millisecond)
 
       // flip the state
       if state == gpio.High {

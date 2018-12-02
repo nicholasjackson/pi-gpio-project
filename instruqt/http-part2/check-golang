@@ -1,9 +1,0 @@
-#!/bin/bash
-# check
-
-echo "Checking the solution of the challenge"
-
-grep -Fq "http.HandleFunc("/"" main.go
-if [ $? != 0 ]; then
-  fail-message "Please make sure you have added the http handler in your main.go file"
-fi

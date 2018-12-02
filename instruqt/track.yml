@@ -689,26 +689,46 @@ challenges:
     ```
   notes:
   - type: text
-    contents: "Ok we are nearly there, there is one last step before we can control
-      our application with Google Assistant, rather than just start the application
-      with `go run` we need to be able to start and stop it based on a HTTP request.
-      \ To do this we are going to implement a simple HTTP server.  \nThe Go standard
-      library again has fantastic capability for this using the `http` package, we
-      can register routes such as \"/\" \nwhich will trigger a function and it only
-      requires a single command to start the server.\n\nFirst we need to map a route
-      which will trigger a function, to do this we use the function \n`http.HandleFunc(path
-      string, handler func(http.ResponseWriter, *http.Request))`.\n\nThis function
-      has two parameters the first is the path which will trigger the function provided
-      in the second parameter."
+    contents: "Ok we are nearly there, there is one last step before we can control\nour
+      application with Google Assistant, rather than just start the application\nwith
+      `go run` we need to be able to start and stop it based on a HTTP request.\n\nTo
+      do this we are going to implement a simple HTTP server.\n\nThe Go standard library
+      again has fantastic capability for this using the `http` package, we\ncan register
+      routes such as \"/\" which will trigger a function and it only\nrequires a single
+      command to start the server.\n\nFirst we need to map a route which will trigger
+      a function, to do this we use the function \n\n`http.HandleFunc(path string,
+      handler func(http.ResponseWriter, *http.Request))`\n\nThis function has two
+      parameters the first is the path which will trigger the function provided\nin
+      the second parameter."
   - type: text
-    contents: "To determine if  the LEDs are to be switched on or off, we are going
-      to read a query string variable.  \nWe are going to add the following code block
-      which will replace your code where we currently have `p14.Cycle()`, etc.\n\n```go\nhttp.HandleFunc(\"/\",
-      func(rw http.ResponseWriter, r *http.Request) {\n  if r.URL.Query().Get(\"mode\")
-      == \"on\" {\n    p14.Cycle()\n    p15.Cycle()\n    p18.Cycle()\n    p23.Cycle()\n
-      \   p24.Cycle()\n    p25.Cycle()\n  } else {\n    p14.Stop()\n    p15.Stop()\n
-      \   p18.Stop()\n    p23.Stop()\n    p24.Stop()\n    p25.Stop()\n  }\n})\n```\n\nIf
-      the webserver is called with the query string `?mode=on` then we will active
+    contents: |-
+      To determine if  the LEDs are to be switched on or off, we are going
+      to read a query string variable.
+
+      We are going to add the following code block which will replace your code where we currently have `p14.Cycle()`,
+      etc.
+
+      ```go
+      http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+        if r.URL.Query().Get(\"mode\") == "on" {
+          p14.Cycle()
+          p15.Cycle()
+          p18.Cycle()
+          p23.Cycle()
+          p24.Cycle()
+          p25.Cycle()
+        } else {
+          p14.Stop()
+          p15.Stop()
+          p18.Stop()
+          p23.Stop()
+          p24.Stop()
+          p25.Stop()
+        }
+      })
+      ```
+
+      If the webserver is called with the query string `?mode=on` then we will active
       the LEDs if it is called with `?mode=off` then we deactivate them."
   tabs:
   - title: Vim
@@ -722,7 +742,7 @@ challenges:
     url: https://godoc.org/net/http
   difficulty: basic
   timelimit: 500
-- slug: http-part2
+- slug: http-2
   id: lqeemlfdtzc1
   type: challenge
   title: HTTP - Part 2
@@ -747,13 +767,28 @@ challenges:
     ```
   notes:
   - type: text
-    contents: "All we need to do now is to start the server with the function `http.HttpListenAndServe(\":9000\",nil)`,
-      \nthis will start a webserver which is accessible on port `9000`.  \nAdd the
-      following line to your `func main` just before the `for` statement.\n\n```go\nhttp.ListenAndServe(\":9000\",
-      nil)\n```\n\nWe can now test our application start the application using `go
-      run main.go` and then in another terminal window \nmake a call to the webserver
-      using curl.\n\n```go\n# Start LEDs cycling\ncurl \"http://localhost:9000/?mode=on\"\n\n#
-      Stop LEDs cycling\ncurl \"http://localhost:9000/?mode=off\"\n```"
+    contents: |-
+      All we need to do now is to start the server with the function
+
+      `http.ListenAndServe(address string, router http.Mux)`
+
+      this will start a webserver which is accessible on port `9000`.
+
+      Add the following line to your `func main` just before the `for` statement
+
+      ```go
+      http.ListenAndServe(\":9000\", nil)
+      ```
+
+      We can now test our application start the application using `go run main.go`
+      and then in another terminal window, make a call to the webserver using curl.
+
+      ```bash
+      # Start LEDs cycling
+      curl "http://localhost:9000/?mode=on"
+      # Stop LEDs cycling
+      curl "http://localhost:9000/?mode=off"
+      ```
   tabs:
   - title: Vim
     type: terminal
@@ -766,4 +801,43 @@ challenges:
     url: https://godoc.org/net/http
   difficulty: basic
   timelimit: 500
-checksum: "12522092991354647364"
+- slug: compiling-go
+  id: vzzoyfqqebog
+  type: challenge
+  title: Using SystemD to manage long running processes
+  teaser: Learn how to use SystemD to manage long running processes
+  assignment: |-
+    Compile your application using the following command
+
+    ```
+    go build -o gpio-pi main.go
+    ```
+  notes:
+  - type: ""
+    contents: |-
+      So far we have been executing our application using `go run`, however we will now
+      look at how we can compile our application into a distributable binary.
+
+      Compilng applications in Go is very simple we can use the command
+
+      ```bash
+      go build -o [filename] [go files]
+      ```
+  tabs:
+  - title: Vim
+    type: terminal
+    hostname: golang
+  - title: Terminal
+    type: terminal
+    hostname: golang
+  difficulty: basic
+  timelimit: 500
+- slug: systemd-1
+  id: oxaz5ihd4jo4
+  type: challenge
+  title: Compiling Go Applications
+  teaser: Learn how to compile Go applications
+  assignment: something
+  difficulty: basic
+  timelimit: 500
+checksum: "10751666255919434448"

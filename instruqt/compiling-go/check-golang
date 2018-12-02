@@ -1,0 +1,8 @@
+#!/bin/bash
+# check
+
+echo "Checking the solution of the challenge"
+
+if [ ! -f ./gpio-pi ]; then
+  fail-message "Please make sure you have compiled your application"
+fi
