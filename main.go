@@ -7,10 +7,19 @@ import (
 	"os"
 	"time"
 
-	"github.com/nicholasjackson/periph-gpio-simulator/host/rpi"
+	"periph.io/x/periph/host/rpi"
+	//"github.com/nicholasjackson/periph-gpio-simulator/host/rpi"
 	"periph.io/x/periph/conn/gpio"
 	"periph.io/x/periph/host"
 )
+
+// Connect LEDs to
+// GPIO 14
+// GPIO 15
+// GPIO 18
+// GPIO 23
+// GPIO 24
+// GPIO 25
 
 func main() {
 	logger := log.New(os.Stdout, "", log.Lmicroseconds)
@@ -53,6 +62,8 @@ func main() {
 
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("mode") == "on" {
+			logger.Println("On")
+
 			p14.Cycle()
 			p15.Cycle()
 			p18.Cycle()
@@ -60,6 +71,8 @@ func main() {
 			p24.Cycle()
 			p25.Cycle()
 		} else {
+			logger.Println("Off")
+
 			p14.Stop()
 			p15.Stop()
 			p18.Stop()
@@ -103,4 +116,5 @@ func (f *PinCycle) Cycle() {
 
 func (f *PinCycle) Stop() {
 	f.Running = false
+	f.Pin.Out(gpio.Low)
 }

@@ -17,44 +17,53 @@ tags:
 developers:
 - jackson.nic@gmail.com
 private: false
-published: false
+published: true
 challenges:
 - slug: go-basics-1
   id: 6ftq35yxhue9
   type: challenge
   title: Go Basics - Part 1
   teaser: Learn the basics of the Go programming language
-  assignment: |
-    The first step is to create the `main.go` application entry point, let's create that file in the current folder.
-
-    Open your file and add the following contents to it:
-
-    ```go
-    package main
-
-    func main() {
-
-    }
-    ```
-
-    The first line in our code is the `package` declaration, an executable Go application always needs a `main` package. The package name is always the first line in the file and normally corresponds to the folder name.  In Go you can break up your application into packages by creating `.go` files inside of folders.  In this demo we are going to concentrate on a single `main.go` file however we will be using external packages.
-
-    Once we have that file we can run it using the command `go run main.go`, run this now in your terminal.
-
-    ```bash
-    $ go run main.go
-    ```
-
-    When you run `go run main.go` the Go run time will compile a temporary version of your application and then execute it, we will not see any output from this run as the `main` func has no content.
+  assignment: "The first step is to create the application main function, all executable
+    applications in go must have a `func main` which resides in the package main.\n\nOpen
+    the file `main.go` and add the following contents to it.  \n\n```go\npackage main\n\nfunc
+    main() {\n\n}\n```\n\nThe first line in our code is the `package` declaration,
+    an executable Go application always needs a `main` package. The package name is
+    always the first line in the file and normally corresponds to the folder name.
+    \ \n\nIn Go you can break up your application into packages by creating `.go`
+    files inside of folders.  In this demo we are going to concentrate on a single
+    `main.go` file however we will be using external packages.\n\nOnce we have that
+    file we can run it using the command `go run main.go`, run this now in your terminal.\n\n```bash\n$
+    go run main.go\n```\n\nWhen you run `go run main.go` the Go runtime will compile
+    a temporary version of your application and then execute it, we will not see any
+    output from this run as the `main` func has no content.\n"
   notes:
   - type: text
     contents: In this task you will learn the basics of a Go application, we will
-      create a simple application and see how we can run it.
+      create a simple application.
   - type: text
     contents: |-
-      One of the benefits of Go is that it allows you to compile an application for multiple architectures from a single source, this makes development really easy as you can easily build an application on MacOs which will run on a Raspberry Pi.
+      One of the benefits of Go is that it allows you to compile an application for multiple architectures from a single source, this means you can easily build an application on MacOS, Linux or Windows which will run on a Raspberry Pi.
 
       For the first part of this tutorial we will be working in a Linux environment, but we will see later how we can cross compile our application and run it on real hardware.
+  - type: text
+    contents: To edit files, `vim` and the Vim IDE `vim-go` have been installed, to
+      open a file in `vim` use the command `vim [filename]`.
+  - type: text
+    contents: |-
+      If you are not familliar with Vim there are two modes, `normal` and `insert`. `normal` mode is used for moving around the file, and `insert` mode is used for editing text.
+
+      You can use the arrow keys or the keys `h (left)`, `j (down)`, `k (up)`, and `l (left)` to move around.
+
+      To edit text you need to be in `insert` mode, to enter `insert` mode press `i`, to exit insert mode press `esc`.
+
+      To save your file make sure you are in `nomal` mode press `:` and then use the command `s` to save.
+
+      To exit Vim again make sure you are in `nomal` mode press `:` and then use the command `q` to exit.
+
+      You can also use the command `x` to save and exit in a single command.
+  - type: image
+    url: https://i.redd.it/auqmgt4b8zm11.png
   tabs:
   - title: Vim
     type: terminal
@@ -65,6 +74,9 @@ challenges:
   - title: Tour of Go
     type: website
     url: https://tour.golang.org/welcome/1
+  - title: Vim Cheat Sheet
+    type: external
+    url: https://vim.rtorr.com/
   difficulty: basic
   timelimit: 500
 - slug: go-basics-2
@@ -73,29 +85,22 @@ challenges:
   title: Go Basics - Part 2
   teaser: Logging in Go
   assignment: |-
-    ```go
-    package main
+    We are now going to add the ability to log output to the command line by creating and using the `log` standard package.
 
-    func main() {
+    Add the following code to your `func main`:
+
+    ```go
       logger := log.New(os.Stdout, "", log.Lmicroseconds)
       logger.Println("Hello World")
-    }
     ```
 
-    In this example we are using two packages `log` and `os`, in order to use a package in Go you need to add it to an `import` statement, many IDE's will do this for you when you save your file.  Let's add the import manually now.  Add the following lines to your source code.
+    We are using two packages `log` and `os`, in order to use a package in Go you need to add it to an `import` statement, many IDE's will do this for you when you save your file.  Let's add the import manually now,  add the following lines to your source code, just beneith the `package` declaration and before your `func main`.
 
     ```go
-    package main
-
     import (
       "log"
       "os"
     )
-
-    func main() {
-      logger := log.New(os.Stdout, "", log.Lmicroseconds)
-      logger.Println("Hello World")
-    }
     ```
 
     Imports need to be added to every file where you are using a package if we had another source file `foo.go` and we used the `log` package we would also need to add `import` there too.  Let's now run our program and see what happens `go run main.go`.
@@ -105,11 +110,11 @@ challenges:
     16:46:15.134393 Hello World
     ```
 
-    This time we should see the message "Hello World", with the basics out of the way lets start writing our go programme for our Raspberry Pi.
+    This time we should see the message "Hello World", with the basics out of the way lets start writing our Go program for our Raspberry Pi.
   notes:
   - type: text
     contents: |-
-      Let's add some content to our `func main`, we are going to add a logger which will log output to the command line, to do this we will use the `log` package which is part of Go's standard library.  Add the following lines to your `main.go`.
+      Let's add some content to our `func main`, we are going to add a logger which will log output to the command line, to do this we will use the `log` package which is part of Go's standard library.  We are going to add the following lines to your `main.go`.
 
       ```go
         func main() {
@@ -120,7 +125,9 @@ challenges:
   - type: text
     contents: |2-
 
-      The line `logger := log.New(os.Stdout, "", log.Lmicroseconds)` will create a new logger and assign it to the variable `logger` in Go there is a difference between `:=` and `=`, `:=` is a convenience operator it will create a new variable and assign it a value in one line.  The operator `=` would only assign a value to an existing variable.  We could have written the same line as separate variable creation and assignments like so:
+      The line `logger := log.New(os.Stdout, "", log.Lmicroseconds)` will create a new logger and assign it to the variable `logger`.
+
+      In Go there is a difference between `:=` and `=`, `:=` is a convenience operator it will create a new variable and assign it a value in one line.  The operator `=` would only assign a value to an existing variable.  We could have written the same line as separate variable creation and assignments like so:
 
       ```go
       var logger *log.Logger
@@ -128,7 +135,12 @@ challenges:
       ```
   - type: text
     contents: |-
-      What we are doing in this example is using the `var` keyword which defines a variable, we give it the name `logger` and define the type which is `*log.Logger` this is the object `Logger` from the `log` package and the `*` marks this as a reference which is allocated to the global memory area the `heap` rather than the local store the `stack`.
+      ```go
+      var logger *log.Logger
+      logger = log.New(os.Stdout, "", log.Lmicroseconds)
+      ```
+
+      What we are doing in this example is using the `var` keyword which defines a variable, we give it the name `logger` and define the type which is `*log.Logger` this is the object `Logger` from the `log` package and the `*` defines the Logger as a reference allocated to the global memory area the `heap`, rather than the local store the `stack`.
 
       When we call `log.New(...)` what we are actually doing is calling a function `New` which is present in the `log` package, this function has the signature `func New(out io.Writer, prefix string, flag int) *Logger`.
   - type: text
@@ -139,21 +151,20 @@ challenges:
 
       By writing functions and methods which depend on `interfaces` rather than `structs` we are not being prescriptive on the concrete object which the function or method expects.
   - type: text
-    contents: |-
-      Looking at the definition for `io.Writer` we see it is...
-
-      ```go
-      type Writer interface {
-        Write(p []byte) (n int, err error)
-      }
-      ```
-
-      What we are defining with this `type` statement is a behavior a `struct` which is compatible with `Writer` must implement the method `Write` with the same signature as defined in the interface declaration.
-
-      In our code we are passing `os.Stdout`, the `Stdout` variable in the `os` package, holds a reference to a `struct` which implements the `Write` method, therefor it implements the behavior of the `Writer` interface and can be passed as parameter to the `New` function.  This may feel a little confusing at first but it does not get much more complicated.  Before we continue any further Let's take a look at something which I have mentioned before `functions` and `methods`.
+    contents: "Looking at the definition for `io.Writer` we see it is...\n\n```go\ntype
+      Writer interface {\n  Write(p []byte) (n int, err error)\n}\n```\n\nWhat we
+      are defining with this `type` statement is a behavior a `struct` which is compatible
+      with `Writer` must implement the method `Write` with the same signature as defined
+      in the interface declaration.\n\nIn our code we are passing `os.Stdout`, the
+      `Stdout` variable in the `os` package, holds a reference to a `struct` which
+      implements the `Write` method, therefor it implements the behavior of the `Writer`
+      interface and can be passed as parameter to the `New` function.  This may feel
+      a little confusing at first but it does not get much more complicated.  \n\nBefore
+      we continue any further Let's take a look at something which I have mentioned
+      before `functions` and `methods`."
   - type: text
     contents: |-
-      Go distinguishes between `functions` and `methods` however there is not a great deal of complexity, a `function` is attached to a package, in our code `func main()` is a function, a method is a function which is attached to a struct.  For example see the following code block which defines an `interface` with a `SayHello` method and a `struct` which implements this.
+      Go distinguishes between `functions` and `methods` however there is not a great deal of complexity, a `function` is attached to a package, in our code `func main()` is a function`, a `method` is a function which is attached to a struct.  For example see the following code block which defines an `interface` with a `SayHello` method and a `struct` which implements this.
 
       ```go
       type Greeter interface {
@@ -178,7 +189,7 @@ challenges:
       }
       ```
 
-      Go uses the `([ref] *[StructType])` syntax to attach methods to `structs` which is not encapsulated inside the `struct` declaration.  `struct`s can have have variables which are defined by encapsulating them in the `struct` definition.
+      Go uses the `([ref] *[StructType])` syntax to attach methods to `structs` which is not encapsulated inside the `struct` declaration.  `struct`s can have have `fields` (instance variables), these are defined by encapsulating them in the `struct` definition.
 
       ```go
       type Person struct {
@@ -191,7 +202,7 @@ challenges:
       ```
   - type: text
     contents: |-
-      An example of using this struct could be like the following example:
+      In this example we see how you could instantiate and use an instance of a `struct`:
 
       ```go
       p := Person{} // create a new person, note the {}
@@ -199,20 +210,21 @@ challenges:
       p.SayHello() // call the SayHello method on the struct
       ```
   - type: text
-    contents: |-
-      When we are creating a new struct we always use the curly brackets `{}`, in fact rather than setting the `Greeting` field on a separate line we could have written the code block as following:
-
-      ```go
-      p := Person{
-        Greeting: "Hello World",
-      } // create a new person, and set Greeting
-      p.SayHello() // call the SayHello method on the struct
-      ```
-
-      `p` is now a value type or a `stack` allocated instance of `Person` the `stack` is memory local to our function and is incredibly fast and efficient, when the function exits all the `structs` and variables on the `stack` are automatically cleaned up.  Often however, we need to pass `structs` between functions or methods.  If we attempted to pass a `value` type it would be passed as a `copy` and any changes to state would only exist in the local copy.  Instead we often pass a `reference` this is what is happening with the block `New()` for our logger.
+    contents: "When we are creating a new struct we always use the curly brackets
+      `{}`, in fact rather than setting the `Greeting` field on a separate line we
+      could have written the code block as following:\n\n```go\np := Person{\n  Greeting:
+      \"Hello World\",\n} // create a new person, and set Greeting\np.SayHello() //
+      call the SayHello method on the struct\n```\n\n`p` is now a value type or a
+      `stack` allocated instance of `Person`. \n\nThe `stack` is memory local to our
+      function and is incredibly fast and efficient, when the function exits all the
+      `structs` and variables on the `stack` are automatically cleaned up.  \n\nOften
+      however, we need to pass a `struct` to a function or method.  If we attempted
+      to pass a `value` type it would be passed as a `copy` and any changes to state
+      would only exist in the local copy.  Instead we often pass a `reference` this
+      is how the block `New()` for our logger works."
   - type: text
     contents: |-
-      Creating a reference in Go is really easy, we can either do this at create time by adding an `&` to the beginning of our `struct` name. Or we can take a reference at a later point again using the `&` operator.
+      Creating a reference in Go is really easy, we can either do this at instantiation time by adding a `&` to the beginning of our `struct` name. Or we can take a reference at a later point again using the `&` operator.
 
       ```go
       p := Person{} // p is a value type of Person
@@ -220,7 +232,7 @@ challenges:
       p2 := &p // p2 is a reference to the variable p
       ```
 
-      Unlike C++ we do not need to use a different operator to call methods on values or references, in fact you can mostly ignore what they are, we only really need to understand if something is a variable or a reference when we are passing or receiving objects.
+      Unlike C++ we do not need to use a different operator to call methods on values or references, in fact you can mostly ignore what they are, we only really need to understand if something is a variable or a reference when we are passing or receiving objects.  The Go compiler encourages safety, Go is type safe and will throw a compile time exception if you attempt to pass a reference to a function which expects a value type.
 
       ```go
       a := "abc"
@@ -231,10 +243,14 @@ challenges:
       // 123 because b is a reference to a
       ```
   - type: text
-    contents: |-
-      Last bit of theory before we dive into creating our application, note that to set the value `123` we had to use the syntax `*b` this is because b is not a `value` of type `string` but a `reference` to `a` which is of `type` `string`, in order to set a value for `b` (or a) we must dereference it which we do using the `*` operator.  If you had tried to set `b = "123"` the compiler would have complained with the error `cannot use "123" (type string) as type *string in assignment`.
-
-      To learn more about the basics of Go I recommend you take a look at the excellent tutorial from the Go team: [https://tour.golang.org/welcome/1](https://tour.golang.org/welcome/1).
+    contents: "Last bit of theory before we dive into creating our application.\n\nTo
+      set the value `123` we had to use the syntax `*b` this is because b is not a
+      `value` of type `string` but a `reference` to `a` which is of `type` `string`,
+      in order to set a value for `b` (or a) we must dereference it which we do using
+      the `*` operator.  \n\nIf you had tried to set `b = \"123\"` the compiler would
+      have complained with the error `cannot use \"123\" (type string) as type *string
+      in assignment`.\n\nTo learn more about the basics of Go I recommend you take
+      a look at the excellent tutorial from the Go team: [https://tour.golang.org/welcome/1](https://tour.golang.org/welcome/1)."
   tabs:
   - title: Vim
     type: terminal
@@ -315,35 +331,21 @@ challenges:
   id: nathasojssjr
   type: challenge
   title: Working with GPIO - Part 2
-  teaser: Learn how to work with GPIO in Go
-  assignment: |-
-    Add the following code to your example
-
-    ```go
-    rpi.SO_51.Out(gpio.High)
-
-    // Block application exit
-    select{}
-    ```
-
-    The line `rpi.SO_51.Out(gpio.High)` will set `Pin 15` on the Pi to High, the following lines ensure that our application will not exit until a key press is detected.
-
-    We also need to add two more package imports to our code...
-
-    ```go
-    // GPIO simulator for the Raspberry Pi, compatible with periph.io rpi package
-    "github.com/nicholasjackson/periph-gpio-simulator/host/rpi"
-    // GPIO functionality for periph.io
-    "periph.io/x/periph/conn/gpio"
-    ```
-
-    When you now run your application again you should now see the simulator and Pin 15 should be highlighted in Red showing it's High state, all the other pins will be white.
+  teaser: Setting output state of GPIO pins
+  assignment: "Add the following code to your example:\n\n```go\nrpi.SO_51.Out(gpio.High)\n\n//
+    Block application exit\nselect{}\n```\n\nThe line `rpi.SO_51.Out(gpio.High)` will
+    set `Pin 15` on the Pi to High. \n\nThe empty `select{}` statement ensure that
+    our application will not exit until a key press is detected.\n\nWe also need to
+    add two more package imports to our code...\n\n```go\n// GPIO simulator for the
+    Raspberry Pi, compatible with periph.io rpi package\n\"github.com/nicholasjackson/periph-gpio-simulator/host/rpi\"\n//
+    GPIO functionality for periph.io\n\"periph.io/x/periph/conn/gpio\"\n```\n\nWhen
+    you now run your application you should now see the simulator and Pin 15 should
+    be highlighted in Red showing it's High state, all the other pins will be white."
   notes:
   - type: text
     contents: |-
       Since we are not currently coding onto a Raspberry Pi, we can use a simulator
-      which is a direct replacement for the Pi but will show us graphically the output
-      of the pins.
+      which is a direct replacement for the periph.io Raspberry Pi host package.  Rather than interacting with the GPIO interface on the hardware, it will show us graphically the output of the GPIO pin state.
 
       ```bash
       ######### Raspbery Pi Model Zero GPIO simulator ###########
@@ -356,10 +358,8 @@ challenges:
       17:05:52.682209 Hello World
       ```
   - type: text
-    contents: |-
-      Let's add some code to set one of the pins to `High`
-      this would send voltage to the pin and if a LED was attached then the LED would
-      illuminate.
+    contents: Let's add some code to set one of the pins to `High` this would send
+      voltage to the pin and if a LED was attached then the LED would illuminate.
   tabs:
   - title: Vim
     type: terminal
@@ -376,7 +376,7 @@ challenges:
   id: gfolflwxqw7l
   type: challenge
   title: Working with GPIO - Part 3
-  teaser: Learn how to use the GPIO interface
+  teaser: Cycling pin state to make an LED flash
   assignment: |-
     Add the following code to the end of your `main.go`.
 
@@ -406,6 +406,7 @@ challenges:
     }
 
     func (f *PinCycle) Stop() {
+      f.Pin.Out(gpio.Low)
       f.Running = false
     }
     ```
@@ -426,8 +427,8 @@ challenges:
   - type: text
     contents: "Let's modify things a little further to cycle this pin on and off.\n\nTo
       cycle the pin high and low we are going to create an endless loop which continuously
-      flips \nthe state and then waits for a set interval.  First we will create a
-      new `struct` which will encapsulate this behavior."
+      flips the state and then sleeps for a predefined interval.  \n\nFirst we will
+      create a new `struct` which will encapsulate this behavior."
   - type: text
     contents: "The struct has two fields `Pin` which is of type `gpio.PinIO` and `Running`
       of type `bool`, the `Pin` field will hold a \nreference to our Raspberry Pi
@@ -463,16 +464,18 @@ challenges:
     contents: |-
       Let's examine what is going on in this block.
 
-      First is that we are using a new keyword `go`, the `go` keyword will execute a statement and will not wait for it to return, since we are using a continuous loop inside of our method if we did not use the `go` keyword then the `Cycle` method would block forever and nothing beneath it in our program would execute.  When using the `go` keyword we could execute a single statement, for example `go logger.Println("Hello World")`, however when we need to execute multiple statement we can wrap these into an inline function with `go func() {//...}()`.
+      First is that we are using a new keyword `go`, the `go` keyword will execute a statement and will not wait for it to return, since we are using a continuous loop inside of our method if we did not use the `go` keyword then the `Cycle` method would block forever and nothing beneath it in our program would execute.  When using the `go` keyword we could execute a single statement, for example: `go logger.Println("Hello World")`, however when we need to execute multiple statement we can wrap these into an inline function with `go func() {//...}()`.
 
       In the next line we are setting the running state to true with the line `f.Running = true`, `Running` is a field on our `PinCycle` struct, we use the `f.` accessor as this is what we defined in the method signature as a variable to attach the method to the struct, `func(f *PinCycle) Cycle()`.
 
-      We are then setting the initial pin state to `gpio.High`, we will use this variable to cycle the pin between high and low states and this will cause our LED to flash.
+      We then set the initial pin state to `gpio.High`, we will use this variable to cycle the pin between high and low states and this will cause our LED to flash.
 
       Next we start a loop `for f.Running { // ...}`, this loop will run as long as the value of `f.Running` is set to `true`, this is also the code which would block our program from executing future statements had we not wrapped it into a `go func() {}()` block.
   - type: text
     contents: |-
-      We then set our pins output state to our current state, for the first iteration of the loop this will be `gpio.High`, before we change the state again we are going to `Sleep` for half a second.  To sleep we are going to use the `Sleep(time.Duration)` function from the `time` Go standard package.  This function has a single parameter which is a duration, we can create a duration simply by multiplying an integer by a time.Duration type, `500 *time.Millisecond)`.
+      We then set our pins output state to our current state.
+
+      For the first iteration of the loop this will be `gpio.High`, before we change the state again we are going to `Sleep` for half a second.  To sleep we are going to use the `Sleep(time.Duration)` function from the `time` Go standard package.  This function has a single parameter which is a duration, we can create a duration simply by multiplying an integer by a time.Duration type, `500 *time.Millisecond)`.
 
       After we have slept we need to cycle the pin state before repeating our loop, to do this we are using an `if` statement, an `if` statement allows us to do one thing if the condition in the statement is true and something else when it is false.
 
@@ -484,28 +487,24 @@ challenges:
       }
       ```
   - type: text
-    contents: |-
-      We are checking if the state is currently `gpio.High` and if so we set it to `gpio.Low`, if it is `gpio.Low` we then set things to `gpio.High`.
-
-      When we call the `Cycle()` method on our `PinCycle` struct the pin state will change every half a second and when there is a LED attached to the pin this will cause it to flash.
-
-      Since we are now using the `time` package add this to your list of imported packages at the top of your file.  We can then delete the line `rpi.P1_15.Out(gpio.High)` create an instance of our `PinCycle` struct and call the `Cycle` method.
-
-      ```go
-      p15 := PinCycle{
-        Pin:     rpi.SO_51,// GPIO 15
-        Running: false,
-      }
-      p15.Cycle()
-      ```
+    contents: "We are checking if the state is currently `gpio.High` and if so we
+      set it to `gpio.Low`, if it is `gpio.Low` we then set things to `gpio.High`.\n\nWhen
+      we call the `Cycle()` method on our `PinCycle` struct the pin state will change
+      every half a second and when there is a LED attached to the pin this will cause
+      it to flash.\n\nSince we are now using the `time` package we need to add this
+      to our list of imported packages at the top of the `main.go` file.  \n\nWe can
+      then replace the line `rpi.P1_15.Out(gpio.High)` with an instance of our `PinCycle`
+      struct and call the `Cycle` method.\n\n```go\np15 := PinCycle{\n  Pin:     rpi.SO_51,//
+      GPIO 15\n  Running: false,\n}\np15.Cycle()\n```"
   - type: text
     contents: |-
-      When we are creating our `PinCycle` object we are passing it a reference to the Pin we would like to cycle and also setting the initial state for `Running` to be `false`.
+      When we are creating our `PinCycle` struct we are passing it a reference to the Pin we would like to cycle, and also setting the initial state for `Running` to be `false`.
 
       Before we continue, let's also add a `Stop` method, we will need this later.
 
       ```go
       func (f *PinCycle) Stop() {
+        f.Pin.Out(gpio.Low)
         f.Running = false
       }
       ```
@@ -513,7 +512,7 @@ challenges:
       All we are doing here is setting the internal Field to false, this will make the loop in the `Cycle` method exit.
   - type: text
     contents: |-
-      If you run your app gain `go run main.go` you should now see pin 15
+      Start your app by running the command `go run main.go`, you should now see pin 15
       flashing every 0.5 seconds.
 
       ```bash
@@ -542,7 +541,7 @@ challenges:
   id: gtlspbvwh0ax
   type: challenge
   title: Working with GPIO - Part 4
-  teaser: Learn how to control GPIO on the Raspberry Pi with Go
+  teaser: Working with multiple pins
   assignment: |-
     Modify your code to add the following statements.
 
@@ -589,9 +588,10 @@ challenges:
   notes:
   - type: text
     contents: "Lets add some more pins to our application, we are going to use pins
-      `14`,`15`,`18`,`23`, `24`, and `25`, \nwhich correspond to `SO_51`, `SO_53`,
-      `SO_64`, `SO_77`, `SO_81`, `SO_83`.  Define the new `PinCycle` structs and call
-      the `Cycle` \nmethod for your new pins."
+      `14`,`15`,`18`,`23`, `24`, and `25`, which correspond to `SO_51`, `SO_53`, `SO_64`,
+      `SO_77`, `SO_81`, `SO_83`.  \n\n```bash\nSO_51 = GPIO_14\nSO_53 = GPIO_15\nSO_64
+      = GPIO_18\nSO_77 = GPIO_23\nSO_81 = GPIO_24\nSO_82 = GPIO_25\n```\n\nDefine
+      the new `PinCycle` structs and call the `Cycle` method for your new pins."
   tabs:
   - title: Vim
     type: terminal
@@ -608,9 +608,10 @@ challenges:
   id: 6iqfirhylhou
   type: challenge
   title: Working with GPIO - Part 5
-  teaser: Learn how to control GPIO on the Raspberry Pi with Go
+  teaser: Randomizing flash duration
   assignment: |-
     Change the line in your `Cycle` method, `time.Sleep(500 * time.Millisecond)` and replace it with the following two lines.
+
     ```go
       sleepDuration := rand.Intn(1000-300) + 300
       time.Sleep(time.Duration(sleepDuration) * time.Millisecond)
@@ -619,14 +620,14 @@ challenges:
     Now when you run `go run main.go` you should see 6 of the pins flashing at different rates.
   notes:
   - type: text
-    contents: "This is somewhat boring though, what would be nice is if they flashed
-      at different rates, \nlets make a little change to our code to change the flash
-      duration.\n\nWe are going to use the random standard package `rand` to create
-      a random duration between 300 milliseconds and 1000 milliseconds, \nto do this
-      we use the function `rand.Intn(max int)` which returns a random number up to
-      the specified maximum.  \nTo get a number in a range we generate a number which
-      is our max with the minimum subtracted then add the minimum.\n\nRemember to
-      add the package `rand` to your imports."
+    contents: "Let's see how we can make all the LEDs flash at different rates, it
+      only requires a little change to our code to change the flash duration.\n\nWe
+      are going to use the random standard package `rand` to create a random duration
+      between 300 milliseconds and 1000 milliseconds, to do this we use the function
+      `rand.Intn(max int)` which returns a random number up to the specified maximum.
+      \ \nTo get a number in a range we generate a number which is our max with the
+      minimum subtracted then add the minimum.\n\nRemember to add the package `rand`
+      to your imports."
   - type: text
     contents: |-
       Change the line in your `Cycle` method, `time.Sleep(500 * time.Millisecond)` and replace it with the following two lines.
@@ -689,28 +690,29 @@ challenges:
     ```
   notes:
   - type: text
-    contents: "Ok we are nearly there, there is one last step before we can control\nour
-      application with Google Assistant, rather than just start the application\nwith
-      `go run` we need to be able to start and stop it based on a HTTP request.\n\nTo
+    contents: "Ok we are nearly there, there is one last step before we can control
+      our application with Google Assistant, rather than just start the application
+      with `go run` we need to be able to start and stop it based on a HTTP request.\n\nTo
       do this we are going to implement a simple HTTP server.\n\nThe Go standard library
-      again has fantastic capability for this using the `http` package, we\ncan register
-      routes such as \"/\" which will trigger a function and it only\nrequires a single
+      again has fantastic capability for this using the `http` package, we can register
+      routes such as \"/\" which will trigger a function and it only requires a single
       command to start the server.\n\nFirst we need to map a route which will trigger
       a function, to do this we use the function \n\n`http.HandleFunc(path string,
       handler func(http.ResponseWriter, *http.Request))`\n\nThis function has two
-      parameters the first is the path which will trigger the function provided\nin
+      parameters the first is the path which will trigger the function provided in
       the second parameter."
   - type: text
     contents: |-
       To determine if  the LEDs are to be switched on or off, we are going
       to read a query string variable.
 
-      We are going to add the following code block which will replace your code where we currently have `p14.Cycle()`,
-      etc.
+      We are going to add the following code block which will replace your code where we currently have `p14.Cycle()`, etc.
 
       ```go
       http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
         if r.URL.Query().Get(\"mode\") == "on" {
+          log.Println("LEDs On")
+
           p14.Cycle()
           p15.Cycle()
           p18.Cycle()
@@ -718,6 +720,8 @@ challenges:
           p24.Cycle()
           p25.Cycle()
         } else {
+          log.Println("LEDs Off")
+
           p14.Stop()
           p15.Stop()
           p18.Stop()
@@ -728,8 +732,7 @@ challenges:
       })
       ```
 
-      If the webserver is called with the query string `?mode=on` then we will active
-      the LEDs if it is called with `?mode=off` then we deactivate them."
+      If the webserver is called with the query string `?mode=on` then we will active the LEDs if it is called with `?mode=off` then we deactivate them."
   tabs:
   - title: Vim
     type: terminal
@@ -780,8 +783,7 @@ challenges:
       http.ListenAndServe(\":9000\", nil)
       ```
 
-      We can now test our application start the application using `go run main.go`
-      and then in another terminal window, make a call to the webserver using curl.
+      We can now test our application start the application using `go run main.go` and then in another terminal window, make a call to the webserver using curl.
 
       ```bash
       # Start LEDs cycling
@@ -801,43 +803,121 @@ challenges:
     url: https://godoc.org/net/http
   difficulty: basic
   timelimit: 500
-- slug: compiling-go
-  id: vzzoyfqqebog
+- slug: compile-1
+  id: oxaz5ihd4jo4
   type: challenge
-  title: Using SystemD to manage long running processes
-  teaser: Learn how to use SystemD to manage long running processes
+  title: Compiling Go Applications - Part 1
+  teaser: Learn how to compile Go applications
   assignment: |-
-    Compile your application using the following command
+    Compile your application using the command:
 
     ```
     go build -o gpio-pi main.go
     ```
+
+    You can now run your application by running `./gpio_pi`
   notes:
-  - type: ""
+  - type: text
     contents: |-
-      So far we have been executing our application using `go run`, however we will now
-      look at how we can compile our application into a distributable binary.
+      So far we have been using `go run` to start our application however this is a convenience command which actually compiles a temporary version of your application and executes it.
 
-      Compilng applications in Go is very simple we can use the command
+      In order to distribute our application we need to be able to compile it into a single binary, Go allows us to compile not just for the architecture which we are currently on but also for multiple architectures.
 
-      ```bash
-      go build -o [filename] [go files]
+      For example I can build an application on MacOS which would run on Windows, or more relevant in our case I can build an application in Linux and the x86-64 architecture for the Raspbery Pi which is Linux and the Arm architecture.
+
+      Before we get into cross compilation let's look at how we can compile for the current architecture.
+  - type: text
+    contents: |-
+      To compile our source code into an executable binary we can use the following command:
+
+      ```
+      go build -o [filename] [source]
+      ```
+
+      ```
+      go build -o gpio-pi main.go
       ```
   tabs:
-  - title: Vim
-    type: terminal
-    hostname: golang
   - title: Terminal
     type: terminal
     hostname: golang
   difficulty: basic
   timelimit: 500
-- slug: systemd-1
-  id: oxaz5ihd4jo4
+- slug: compile-2
+  id: xdumm3hbemxp
   type: challenge
-  title: Compiling Go Applications
-  teaser: Learn how to compile Go applications
-  assignment: something
+  title: Compiling Go Applications - Part 2
+  teaser: Learn how to compile Go for Raspberry Pi
+  assignment: |-
+    First we need to replace our Raspberry Pi simulator with the `periph.io` package for interacting with the real hardware.
+
+    Replace the line:
+
+    `"github.com/nicholasjackson/periph-gpio-simulator/host/rpi"`
+
+    with
+
+    `"periph.io/x/periph/host/rpi"`
+
+
+    Let's now compile our application for the Raspberry Pi:
+
+    ```
+    GOARCH=arm GOARM=6 go build -o gpio-pi-arm main.go
+    ```
+
+    That is all we need to do, to learn how to deploy this to your pi and how to control it using Google Assitant, please follow the instructions on the GitHub repository:
+
+    [https://github.com/nicholasjackson/pi-gpio-project](https://github.com/nicholasjackson/pi-gpio-project)
+  notes:
+  - type: text
+    contents: |-
+      Cross compiling applications in Go is incredibly simple, we can set environment variables to determine what the destination operating system and architecture should be.
+
+      ```
+      GOOS=Linux GOARCH=arm GOARM=5 go build -o gpio-pi-arm main.go
+      ```
+  - type: text
+    contents: |-
+      The supported values for GOOS without the need for an additional C compiler are:
+
+      * darwin
+      * dragonfly
+      * freebsd
+      * linux
+      * nacl
+      * netbsd
+      * openbsd
+      * plan9
+      * solaris
+      * windows
+  - type: text
+    contents: |-
+      And the list for GOARCH values:
+
+      * 386
+      * amd64
+      * amd64p32
+      * arm
+      * arm64
+      * ppc64
+      * ppc64le
+      * mips
+      * mipsle
+      * mips64
+      * mips64le
+      * s390x
+  - type: text
+    contents: |-
+      For the Arm architechture which is used by the Raspbery Pi we also need to set an additional flag `GOARM` which has the following values:
+
+      * 5 // armel
+      * 6 // Raspberry Pi A, A+, B, B+, Zero
+      * 7 // Raspbery Pi 2/3
+  tabs:
+  - title: Terminal
+    type: terminal
+    hostname: golang
   difficulty: basic
   timelimit: 500
-checksum: "10751666255919434448"
+checksum: "1179730725845457080"

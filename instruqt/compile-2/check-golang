@@ -1,0 +1,13 @@
+#!/bin/bash
+# check
+
+echo "Checking the solution of the challenge"
+
+grep -Fq "periph.io/x/periph/host/rpi" main.go
+if [ $? != 0 ]; then
+  fail-message "Please make sure you have added the import for the periph.io Raspberry Pi host to your main.go file"
+fi
+
+if [ ! -f ./gpio-pi-arm ]; then
+  fail-message "Please make sure you have compiled your application"
+fi
